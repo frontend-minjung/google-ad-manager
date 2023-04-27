@@ -256,10 +256,14 @@
       };
 
       const orgname = document.querySelector("#orgname");
-      orgname.addEventListener("click", () => {
+      orgname.addEventListener("click", (event) => {
         if (!result.isManager) return;
-        const newPath = `${clientUrl}/channel/${result.channelUrl}`;
-        window.open(newPath, "_top");
+        event.preventDefault();
+
+        if(event.isTrusted) {
+            const newPath = `${clientUrl}/channel/${result.channelUrl}`;
+            window.open(newPath, "_top");
+        }
       });
 
       const getFormattingCount = (count) => {
@@ -272,11 +276,6 @@
       // const isXSDown = () => {
       //   return window.innerWidth <= 599.95;
       // };
-
-      const link = document.querySelector("#link");
-      link.addEventListener("click", (e) => {
-        "[%outlink_url%]" && window.open("[%outlink_url%]", "_blank");
-      });
 
       const cloudinaryURL = (url, options) => {
         if (!url) return "";
@@ -398,11 +397,17 @@
         const root = document.querySelector(".root");
         root && root.setAttribute("data-id", [%acvitiy_id%]);
 
-        if (link) {
-          const url = `${clientUrl}/activity/${id}`;
-          link.href = url;
-          link.as = url;
-        }
+        const link = document.querySelector("#link");
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            if(event.isTrusted) {
+            "[%outlink_url%]" && window.open("[%outlink_url%]", "_blank");
+            const url = `${clientUrl}/activity/${id}`;
+            link.href = url;
+            link.as = url;
+            }
+        })
+
         const thumbnail = document.querySelector("#thumbnail-image");
         const isRecruit = type === "RECRUIT";
         const imageUrl =
