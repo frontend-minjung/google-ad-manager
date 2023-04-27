@@ -146,14 +146,14 @@
     <div>
       <div class="root">
         <div class="skeleton-wrapper">
-          <a id="link" class="skeleton-rect activity-image-border"
+          <a target="_top" id="link" class="skeleton-rect activity-image-border"
             ><div class="activity-image">
               <img id="thumbnail-image" class="thumbnail-image" sizes="100vw" />
               <div class="thumbnail-image-element"></div></div
           ></a>
         </div>
         <div class="card-content">
-          <a id="title-link"
+          <a target="_top" id="title-link"
             ><p
               id="activity-title"
               class="activity-title content-text-margin title-ellipsis color-text-primary"
@@ -185,10 +185,12 @@
   </body>
   <script>
       let result = {};
+      const order = "[%order%]"
+      const targetOrigin = "https://local.lnkr.cc:7000/";
 
-        const order = "[%order%]"
-
-        const targetOrigin = "https://local.lnkr.cc:7000/";
+      const isTest = "[%isTest%]" === 'true' ? true : false;
+      let apiUrl = isTest ? "https://api.lnkr.cc/graphql" : "https://api.linkareer.com/graphql";
+      let clientUrl = isTest ? "https://lnkr.cc" : "https://linkareer.com";
 
     window.parent.postMessage(
          { adManagerData: { type: "ACTIVITY_ID", data: [%acvitiy_id%], order : `popular-activity-${order}` } },
@@ -206,19 +208,6 @@
         "https://api.linkareer.com",
         "https://api.lnkr.cc",
       ];
-
-      const useIsWebview = () => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const isWebview = urlSearchParams.get("webview") !== null;
-        return isWebview;
-      };
-
-      const getWebviewHref = (href, isWebview = false) => {
-        if (!isWebview) {
-          return href;
-        }
-        return `/webview` + href;
-      };
 
       const getDDay = (closeDate) => {
         if (!closeDate) return null;
@@ -269,28 +258,25 @@
       const orgname = document.querySelector("#orgname");
       orgname.addEventListener("click", () => {
         if (!result.isManager) return;
-        const newPath = getWebviewHref(
-          `https://lnkr.cc/channel/${result.channelUrl}`,
-          useIsWebview()
-        );
-        window.location.href = newPath;
+        const newPath = `${clientUrl}/channel/${result.channelUrl}`;
+        window.open(newPath, "_top");
       });
 
-        const getFormattingCount = (count) => {
-          // if (isXSDown()) {
-          //   return getLimitNumText({ number: count, limit: 99999 });
-          // }
-          return numberWithCommas(count);
-        };
+      const getFormattingCount = (count) => {
+        // if (isXSDown()) {
+        //   return getLimitNumText({ number: count, limit: 99999 });
+        // }
+        return numberWithCommas(count);
+      };
 
-        // const isXSDown = () => {
-        //   return window.innerWidth <= 599.95;
-        // };
+      // const isXSDown = () => {
+      //   return window.innerWidth <= 599.95;
+      // };
 
-    const link = document.querySelector("#link");
-        link.addEventListener("click", (e) => {
-          "[%outlink_url%]" && window.open("[%outlink_url%]", "_blank");
-        });
+      const link = document.querySelector("#link");
+      link.addEventListener("click", (e) => {
+        "[%outlink_url%]" && window.open("[%outlink_url%]", "_blank");
+      });
 
       const cloudinaryURL = (url, options) => {
         if (!url) return "";
@@ -356,7 +342,7 @@
         const isTest = "[%isTest%]" === true
         // console.log(isTest)
 
-        const response = await fetch("https://api.lnkr.cc/graphql", {
+        const response = await fetch(`${apiUrl}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -413,7 +399,7 @@
         root && root.setAttribute("data-id", [%acvitiy_id%]);
 
         if (link) {
-          const url = `https://lnkr.cc/activity/${id}`;
+          const url = `${clientUrl}/activity/${id}`;
           link.href = url;
           link.as = url;
         }
@@ -435,12 +421,14 @@
         }
 
         const titleLink = document.querySelector("#title-link");
-        titleLink && (titleLink.href = `https://lnkr.cc/activity/${id}`);
+        if(titleLink) {
+            titleLink.href = `${clientUrl}/activity/${id}`;
+        }
 
-          const activityTitle = document.querySelector("#activity-title");
-          if (activityTitle) {
-       activityTitle.textContent = "[%title%]" || title || "";
-          }
+        const activityTitle = document.querySelector("#activity-title");
+        if (activityTitle) {
+            activityTitle.textContent = "[%title%]" || title || "";
+        }
 
         const orgname = document.querySelector("#orgname");
         if (orgname) {
