@@ -137,7 +137,7 @@
     <div>
       <div class="root">
         <div class="skeleton-wrapper">
-          <a target="_top" id="link" class="skeleton-rect activity-image-border"
+          <a id="link" class="skeleton-rect activity-image-border"
             ><div class="activity-image">
               <img id="thumbnail-image" class="thumbnail-image" sizes="100vw" />
               <div class="thumbnail-image-element"></div></div
@@ -393,8 +393,8 @@
             const url = `${clientUrl}/activity/${id}`;
             link.href = url;
             link.as = url;
-            window.location.href = url;
-            window.open(url, "_top")
+            window.parent.location.href = url;
+              console.log('parent')
             }
         })
 
